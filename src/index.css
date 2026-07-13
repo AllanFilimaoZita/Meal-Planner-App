@@ -6,19 +6,13 @@
 
 @import "tailwindcss";
 
-
 @theme {
-  extend: {
-    colors: {
-      primary: "#8B4EEB",
-      secondary: "#F2F2F2",
-      accent: "#FFFFFF",
-      button: "#060606",
-      textos: "#3D3D3D",
-      skip: "#1F73F1"
-    },
-    fontFamily: {
-      sans: ["SF Pro Display", "Arial", "sans-serif"],
-    },
-  },
+  --color-primary: #8B4EEB;
+  --color-secondary: #F2F2F2;
+  --color-accent: #FFFFFF;
+  --color-button: #060606;
+  --color-textos: #3D3D3D;
+  --color-skip: #1F73F1;
+
+  --font-sans: "SF Pro Display", "Arial", "sans-serif";
 }

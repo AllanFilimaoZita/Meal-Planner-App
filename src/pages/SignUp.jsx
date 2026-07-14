@@ -2,7 +2,7 @@ import { FcGoogle } from "react-icons/fc";
 import { ImFacebook2 } from "react-icons/im";
 import { FaApple } from "react-icons/fa";
 
-import Background from '../assets/img/background.png';
+import Background from '../assets/img/img.png';
 
 import PrimaryButton from '../components/ui/PrimaryButton';
 import Divider from '../components/ui/Divider';

@@ -1,18 +1,1 @@
-@font-face {
-  font-family: "SF Pro Display";
-  src: url("/src/assets/fonts/sf-pro-display-regular.woff2") format("woff2"),
-       url("/src/assets/fonts/sf-pro-display-regular.woff") format("woff");
-}
-
 @import "tailwindcss";
-
-@theme {
-  --color-primary: #8B4EEB;
-  --color-secondary: #F2F2F2;
-  --color-accent: #FFFFFF;
-  --color-button: #060606;
-  --color-textos: #3D3D3D;
-  --color-skip: #1F73F1;
-
-  --font-sans: "SF Pro Display", "Arial", "sans-serif";
-}

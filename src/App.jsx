@@ -4,13 +4,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import Step1 from './pages/Step1'
 // import Step2 from './pages/Step2'
 // import Notifications from './pages/Notifications'
-import Feedback from './pages/Feedback'
+// import Feedback from './pages/Feedback'
+import Upgrade from './pages/Upgrade'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Feedback />} />
+        <Route path="/" element={<Upgrade />} />
       </Routes>
     </BrowserRouter>
   );

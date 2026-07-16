@@ -10,13 +10,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import Milestone from "./pages/Milestone";
 // import Recipe from './pages/Recipe';
 // import Preparetion from './pages/Preparetion';
-import Chat from './pages/Chat'
+import Home from './pages/Home';
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Chat />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );

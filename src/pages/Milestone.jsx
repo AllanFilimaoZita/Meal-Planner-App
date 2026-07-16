@@ -1,3 +1,5 @@
+import Navigation from '../components/Navigation';
+
 import Food1 from '../assets/img/food1.jpg'
 import Food2 from '../assets/img/food2.jpg'
 import Food3 from '../assets/img/food3.jpg'
@@ -6,12 +8,8 @@ import Fire from '../assets/svg/Fire.svg';
 import Taca from '../assets/svg/Taca.svg';
 import Photo from '../assets/img/Photo.png'
 
-import { PiBasketBold } from "react-icons/pi";
-import { BsChatRight } from "react-icons/bs";
-import { CiForkAndKnife } from "react-icons/ci";
 import { IoMdMenu } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
-import { IoSunnyOutline } from "react-icons/io5";
 
 function Milestone() {
     return (
@@ -48,7 +46,7 @@ function Milestone() {
 
             </section>
             
-            <section className='flex flex-col items-center justify-between mt-5 w-full h-full gap-5'>
+            <section className='flex flex-col items-center justify-between mt-5 w-full h-full gap-5 mb-15'>
 
                 <div>
                     <img src={Food3} className='rounded-2xl' />
@@ -62,36 +60,9 @@ function Milestone() {
                 <div>
                     <img src={Food2} className='rounded-2xl' />
                 </div>
-                
-
             </section>
 
-            <nav className="w-[90%] flex items-center justify-between bg-black text-white px-6 py-3 rounded-full fixed bottom-2 left-1/2 -translate-x-1/2 z-20">
-
-                <div className="flex flex-col items-center justify-center gap-1">
-                    <div className="bg-white text-black rounded-full p-1.5">
-                        <IoSunnyOutline className="size-4" />
-                    </div>
-                    <span className="text-[10px] font-bold">Today</span>
-                </div>
-
-                <div className="flex flex-col items-center justify-center gap-1 opacity-60">
-                    <CiForkAndKnife className="size-5" />
-                    <span className="text-[10px]">Meal Plan</span>
-                </div>
-
-                <div className="flex flex-col items-center justify-center gap-1 opacity-60">
-                    <PiBasketBold className="size-5" />
-                    <span className="text-[10px]">Grocery List</span>
-                </div>
-
-                <div className="flex flex-col items-center justify-center gap-1 opacity-60">
-                    <BsChatRight className="size-5" />
-                    <span className="text-[10px]">Chat</span>
-                </div>
-
-            </nav>
-
+            <Navigation />
         </div>
     )
 }

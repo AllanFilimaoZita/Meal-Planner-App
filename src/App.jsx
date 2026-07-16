@@ -7,13 +7,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import Notifications from './pages/Notifications'
 // import Feedback from './pages/Feedback'
 // import Upgrade from './pages/Upgrade'
-import Milestone from "./pages/Milestone";
+// import Milestone from "./pages/Milestone";
+import Recipe from './pages/Recipe'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Milestone />} />
+        <Route path="/" element={<Recipe />} />
       </Routes>
     </BrowserRouter>
   );

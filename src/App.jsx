@@ -9,13 +9,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import Upgrade from './pages/Upgrade';
 // import Milestone from "./pages/Milestone";
 // import Recipe from './pages/Recipe';
-import Preparetion from './pages/Preparetion';
+// import Preparetion from './pages/Preparetion';
+import Chat from './pages/Chat'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Preparetion />} />
+        <Route path="/" element={<Chat />} />
       </Routes>
     </BrowserRouter>
   );

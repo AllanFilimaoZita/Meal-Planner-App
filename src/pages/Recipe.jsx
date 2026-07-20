@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { MdKeyboardBackspace } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 import { IoReload } from "react-icons/io5";
@@ -9,7 +11,9 @@ function Recipe() {
         <div className="h-full w-full py-5 relative">
 
             <header className="w-full flex items-start justify-between gap-3 px-5 absolute py-4">
-                <MdKeyboardBackspace className="size-7" />
+                <Link to={"/home"}>
+                    <MdKeyboardBackspace className="size-7" />
+                </Link>
                 <IoIosMore className="size-7" />
             </header>
 

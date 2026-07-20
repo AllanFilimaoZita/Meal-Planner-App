@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { MdKeyboardBackspace } from "react-icons/md";
 
 function Feedback() {
@@ -44,7 +46,9 @@ function Feedback() {
                             <input id="input-nome" type="text" placeholder="How can we do better?" className="flex items-start justify-start border-solid border w-full h-42 rounded-md placeholder:flex placeholder:items-start placeholder:text-start " />
                         </section>
 
-                        <button className="bg-[#8B4EEB] py-2 px-20 rounded text-white font-bold">Submit Feedback</button>
+                        <Link to={"/upgrade"}>
+                            <button className="bg-[#8B4EEB] py-2 px-20 rounded text-white font-bold">Submit Feedback</button>
+                        </Link>
                     </section >
                 </section>
             </section>

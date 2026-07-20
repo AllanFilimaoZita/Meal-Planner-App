@@ -1,4 +1,4 @@
-import Navigation from '../components/Navigation';
+import Navigation from "../components/Navigation";
 
 import Food1 from '../assets/img/food1.jpg'
 import Food2 from '../assets/img/food2.jpg'
@@ -60,9 +60,12 @@ function Milestone() {
                 <div>
                     <img src={Food2} className='rounded-2xl' />
                 </div>
+                
+
             </section>
 
             <Navigation />
+
         </div>
     )
 }

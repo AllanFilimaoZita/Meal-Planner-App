@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { MdKeyboardBackspace } from "react-icons/md";
 import Person from '../assets/img/mayhem.jpg'
 
@@ -25,7 +27,7 @@ function Upgrade() {
                 <section className="w-full h-full flex flex-col gap-5">
 
                     <div className="flex flex-row gap-4 bg-gray-200 items-center justify-center px-5 py-5 w-full rounded-full">
-                        <div className="w-4 h-4 bg-white rounded-full border-1"></div>
+                        <div className="w-4 h-4 bg-white rounded-full border"></div>
                         <div className="w-full flex justify-between">
                             <div>
                                 <h3 className="font-bold">1 Month Plan</h3>
@@ -60,7 +62,9 @@ function Upgrade() {
                 </section>
 
                 <section className="flex flex-col items-center justify-center w-full gap-5">
-                    <button className="bg-[#8B4EEB] text-lg py-4 px-20 rounded-3xl text-white font-bold w-full">Upgrade</button>
+                    <Link to={"/home"} className="w-full">
+                        <button className="bg-[#8B4EEB] text-lg py-4 px-20 rounded-3xl text-white font-bold w-full">Upgrade</button>
+                    </Link>
 
                     <p className="font-bold text-sm text-center w-60">By continuing you agree to the Terms & Conditions</p>
                 </section>

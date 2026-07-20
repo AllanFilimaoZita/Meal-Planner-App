@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import { MdKeyboardBackspace } from "react-icons/md";
 import { TiSocialGithubCircular } from "react-icons/ti";
 import { MdDone } from "react-icons/md";
@@ -10,7 +12,9 @@ function Notifications() {
                     <section className="flex flex-col items-start justify-between w-full h-full">
                         <div className="w-full flex items-start justify-between gap-3">
                             <MdKeyboardBackspace className="size-7" />
-                            <span className="text-[#8B4EEB] font-bold">skip</span>
+                            <Link to={"/home"}>
+                                <span className="text-[#8B4EEB] font-bold">skip</span>
+                            </Link>
                         </div>
 
                         <h2 className="text-xl font-bold text-[#8B4EEB] w-60 mt-5">Do you want to turn on notifications</h2>
@@ -50,7 +54,9 @@ function Notifications() {
                 </section>
 
                 <section>
-                    <button className="bg-[#8B4EEB] py-2 px-20 rounded text-white font-bold">Enable</button>
+                    <Link to={"/feedback"}>
+                        <button className="bg-[#8B4EEB] py-2 px-20 rounded text-white font-bold">Enable</button>
+                    </Link>
                 </section>
             </section>
         </>

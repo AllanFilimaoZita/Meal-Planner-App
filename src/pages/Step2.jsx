@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Step2() {
     return (
         <>
@@ -11,7 +13,9 @@ function Step2() {
                             <span className="font-bold text-white bg-purple-300 rounded-full px-2">4</span>
                         </div>
                         <div>
-                            <span className="text-blue-500 font-bold">skip</span>
+                            <Link to={"/home"}>
+                                <span className="text-blue-500 font-bold">skip</span>
+                            </Link>
                         </div>
                     </section>
                     <section className="flex flex-col w-full h-full flex-wrap gap-2">
@@ -39,8 +43,12 @@ function Step2() {
                 </section>
 
                 <section className="flex items-center justify-between w-full">
-                    <button className="bg-gray-300 font-bold py-2 px-5 rounded">Previous</button>
-                    <button className="bg-[#8B4EEB] text-white font-bold py-2 px-10 rounded">Next</button>
+                    <Link to={"/step1"}>
+                        <button className="bg-gray-300 font-bold py-2 px-5 rounded">Previous</button>
+                    </Link>
+                    <Link to={"/notifications"}>
+                        <button className="bg-[#8B4EEB] text-white font-bold py-2 px-10 rounded">Next</button>
+                    </Link>
                 </section>
             </section>
 

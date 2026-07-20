@@ -4,7 +4,7 @@ import Ramen from '../assets/img/ramen.png'
 import { FaFire } from "react-icons/fa6";
 import { IoMdMenu } from "react-icons/io";
 
-import Navigation from '../components/Navigation'
+import Navigation from "../components/Navigation"
 
 function Home() {
     return (

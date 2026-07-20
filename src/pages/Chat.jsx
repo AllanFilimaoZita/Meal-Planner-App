@@ -1,10 +1,12 @@
-import Navigation from '../components/Navigation'
-
 import Photo from '../assets/img/Photo.png'
 
 import { FaAppStore } from "react-icons/fa";
 import { FaCamera } from "react-icons/fa6";
 import { IoMdMenu } from "react-icons/io";
+import { PiBasketBold } from "react-icons/pi";
+import { BsChatRight } from "react-icons/bs";
+import { CiForkAndKnife } from "react-icons/ci";
+import { IoSunnyOutline } from "react-icons/io5";
 import { IoSend } from "react-icons/io5";
 
 function Chat() {
@@ -37,7 +39,32 @@ function Chat() {
                 </button>
             </div>
 
-            <Navigation />
+            <nav className="w-[90%] flex items-center justify-between bg-black text-white px-6 py-3 rounded-full fixed bottom-2 left-1/2 -translate-x-1/2 z-20">
+
+                <div className="flex flex-col items-center justify-center gap-1">
+                    <div className="bg-white text-black rounded-full p-1.5">
+                        <IoSunnyOutline className="size-4" />
+                    </div>
+                    <span className="text-[10px] font-bold">Today</span>
+                </div>
+
+                <div className="flex flex-col items-center justify-center gap-1 opacity-60">
+                    <CiForkAndKnife className="size-5" />
+                    <span className="text-[10px]">Meal Plan</span>
+                </div>
+
+                <div className="flex flex-col items-center justify-center gap-1 opacity-60">
+                    <PiBasketBold className="size-5" />
+                    <span className="text-[10px]">Grocery List</span>
+                </div>
+
+                <div className="relative flex flex-col items-center justify-center gap-1">
+                    <BsChatRight className="size-5" />
+                    <span className="text-[10px]">Chat</span>
+                    <span className="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full"></span>
+                </div>
+
+            </nav>
         </div>
     )
 }

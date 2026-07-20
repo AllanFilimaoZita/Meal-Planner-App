@@ -9,6 +9,8 @@ import Divider from '../components/ui/Divider';
 import SocialButton from '../components/ui/SocialButton';
 import Login from '../components/ui/Login';
 
+import { Link } from 'react-router-dom';
+
 const SignUp = () => {
     return (
         <main className="h-full flex flex-col items-center justify-center bg-linear-to-b from-black/10 via-[#8B4EEB]/70 to-[#8B4EEB]">
@@ -18,9 +20,11 @@ const SignUp = () => {
             </section>
 
             <section className="mx-auto flex w-full max-w-sm flex-col gap-6 px-6 pb-10">
-                <PrimaryButton>
-                    Sign up with email
-                </PrimaryButton>
+                <Link to={"/onboarding"}>
+                    <PrimaryButton>
+                        Sign up with email
+                    </PrimaryButton>
+                </Link>
 
                 <Divider />
 

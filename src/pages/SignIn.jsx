@@ -35,7 +35,7 @@ const SignIn = () => {
 
             </section>
 
-            <div className="absolute z-10 h-full w-full bg-linear-to-b from-black/50 via-[#8B4EEB]/100 to-[#8B4EEB]">
+            <div className="absolute z-10 h-full w-full bg-linear-to-b from-black/50 --tw-gradient-via: #8B4EEB; to-[#8B4EEB]">
 
             </div>
         </main>

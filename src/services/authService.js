@@ -14,17 +14,17 @@ export async function signUp(name, email, password) {
   return { data, error };
 }
 
-export async function SignIn(email, password) {
-  const {data, error} = await supabase.auth.signWithPassword({
+export async function signIn(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
-    password
+    password,
   });
 
-  return (data, error)
+  return { data, error };
 }
 
-export async function SignOut() {
-  const { error }= await supabase.auth.signOut();
+export async function signOut() {
+  const { error } = await supabase.auth.signOut();
 
-  return ((error))
+  return { error };
 }

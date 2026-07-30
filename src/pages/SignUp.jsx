@@ -1,9 +1,12 @@
-import { Link } from 'react-router-dom';
-import { signUp } from "../services/authService";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function SignUp() {
+import Background from "../assets/img/img.png";
+
+
+import { signUp } from "../services/authService";
+
+const SignUp = () => {
     const navigate = useNavigate();
 
     const [name, setName] = useState("");
@@ -30,51 +33,73 @@ export default function SignUp() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center  bg-linear-to-b from-black/50 --tw-gradient-via: #8B4EEB; to-[#8B4EEB] px-6">
-            <div className="w-full max-w-md bg-black rounded-2xl shadow-lg p-8">
-                <h1 className="text-3xl font-bold text-center text-gray-400">Criar Conta</h1>
+        <main className="relative min-h-screen flex flex-col">
 
-                <p className="text-center text-gray-500 mt-2">
+            <section className="h-[35vh] w-full overflow-hidden">
+                <img
+                    src={Background}
+                    alt="Background"
+                    className="w-full h-full object-cover"
+                />
+            </section>
+
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-[#8B4EEB]/50 to-[#8B4EEB]" />
+
+            <section className="relative z-10 flex flex-col justify-center w-full max-w-sm mx-auto px-6 py-8">
+
+                <h1 className="text-3xl font-bold text-white text-center">
+                    Criar Conta
+                </h1>
+
+                <p className="text-center text-gray-200 mt-2 mb-8">
                     Cadastre-se para continuar
                 </p>
 
-                <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                        <label className="block text-sm text-white mb-2">
                             Nome
                         </label>
 
-                        <input type="text" placeholder="Digite seu nome" value={name} onChange={(e) => setName(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:ring-2 placeholder:text-gray-400 focus:ring-purple-300" />
+                        <input type="text" placeholder="Digite o seu nome" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-purple-400" required />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                        <label className="block text-sm text-white mb-2">
                             Email
                         </label>
 
-                        <input type="email" placeholder="Digite seu email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:ring-2 placeholder:text-gray-400 focus:ring-purple-300" />
+                        <input type="email" placeholder="Digite o seu email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-purple-400" required />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                        <label className="block text-sm text-white mb-2">
                             Senha
                         </label>
 
-                        <input type="password" placeholder="Digite sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:ring-2 placeholder:text-gray-400 focus:ring-purple-300" />
+                        <input type="password" placeholder="Digite a sua senha" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-purple-400" required />
                     </div>
 
-                    <button type="submit" className="w-full bg-[#8B4EEB] text-white py-3 rounded-lg font-semibold hover:bg-[#8B4EEB]/70 transition">
+                    <button  type="submit"  className="bg-black text-white font-semibold py-3 rounded-lg hover:bg-gray-900 transition"
+                    >
                         Criar Conta
                     </button>
+
                 </form>
 
-                <p className="text-center text-gray-500 mt-6">
+                <p className="text-center text-white mt-8">
                     Já possui uma conta?
-                    <Link to="/" className="ml-2 text-green-600 font-semibold hover:underline">
+
+                    <Link to="/signin" className="ml-2 font-bold text-black hover:underline">
                         Entrar
                     </Link>
                 </p>
-            </div>
-        </div>
+
+            </section>
+
+        </main>
     );
-}
+};
+
+export default SignUp;

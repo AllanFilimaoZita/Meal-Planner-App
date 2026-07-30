@@ -14,13 +14,15 @@ import Chat from './pages/Chat';
 import Preparetion from './pages/Preparetion';
 import Home from './pages/Home';
 import Settings from './pages/Settings';
+import SplashScreen from "./pages/SplashScreen";
 
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SignIn />} />
+        <Route path="/" element={<SplashScreen />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/step1" element={<Step1 />} />

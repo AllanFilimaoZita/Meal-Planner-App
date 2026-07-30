@@ -15,16 +15,21 @@ export async function signUp(name, email, password) {
 }
 
 export async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    });
 
-  return { data, error };
+    return { data, error };
 }
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
 
   return { error };
+}
+
+
+export async function getSession() {
+  return await supabase.auth.getSession();
 }

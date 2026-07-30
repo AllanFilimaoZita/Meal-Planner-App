@@ -1,3 +1,4 @@
+import ProtectedRoute from './router/ProtectedRouter'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SignUp from "./pages/SignUp";
@@ -21,21 +22,127 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SplashScreen />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/step1" element={<Step1 />} />
-        <Route path="/step2" element={<Step2 />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/feedback" element={<Feedback />} />
-        <Route path="/upgrade" element={<Upgrade />} />
-        <Route path="/milestone" element={<Milestone />} />
-        <Route path="/recipe" element={<Recipe />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/preparetion" element={<Preparetion />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/home" element={<Home />} />
+        <Route
+          path="/"
+          element={<SplashScreen />}
+        />
+        <Route
+          path="/signin"
+          element={<SignIn />}
+        />
+        <Route
+          path="/signup"
+          element={<SignUp />}
+        />
+
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <Onboarding />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+    
+        <Route
+          path="/step1"
+          element={
+            <ProtectedRoute>
+              <Step1 />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/step2"
+          element={
+            <ProtectedRoute>
+              <Step2 />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/feedback"
+          element={
+            <ProtectedRoute>
+              <Feedback />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/upgrade"
+          element={
+            <ProtectedRoute>
+              <Upgrade />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/milestone"
+          element={
+            <ProtectedRoute>
+              <Milestone />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/recipe"
+          element={
+            <ProtectedRoute>
+              <Recipe />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/preparetion"
+          element={
+            <ProtectedRoute>
+              <Preparetion />
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );

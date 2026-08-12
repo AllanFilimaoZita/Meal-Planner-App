@@ -1,12 +1,63 @@
 import Photo from '../assets/img/Photo.png'
-import Ramen from '../assets/img/ramen.png'
 
 import { FaFire } from "react-icons/fa6";
 import { IoMdMenu } from "react-icons/io";
 
-import Navigation from "../components/Navigation"
+import { useEffect, useState } from "react";
+
+import Navigation from "../components/Navigation";
+import { getMeals } from "../services/mealService";
+import MealCard from "../components/meals/MealCard"
 
 function Home() {
+
+    const [meals, setMeals] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null)
+
+    console.log("Receitas:", meals);
+    console.log("Qauntidade:", meals.length);
+
+    useEffect(() => {
+        async function loadMeals() {
+
+            try {
+
+                const data = await getMeals();
+
+                setMeals(data);
+
+            } catch (error) {
+
+                setError("Não foi possível carregar receitas...")
+
+            } finally {
+
+                setLoading(false);
+
+            }
+
+        }
+
+        loadMeals();
+    }, [])
+
+    if (loading) {
+        return (
+            <div className='w-full h-full flex flex-col items-center justify-center'>
+                <p>Carregando...</p>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className='w-full h-full flex flex-col items-center justify-center'>
+                <p>{error}</p>
+            </div>
+        )
+    }
+
     return (
         <div className="w-full h-full flex flex-col items-center justify-end py-5  relative">
 
@@ -44,11 +95,16 @@ function Home() {
                     </p>
                 </div>
             </section>
-            
-            <section className='flex flex-col items-center justify-center gap-5 mt-5 mb-15'>
 
-                <img src={Ramen} className='w-80 h-70 rounded-2xl' />
-                <img src={Ramen} className='w-80 h-70 rounded-2xl' />
+            <section className='flex flex-col items-center justify-center gap-5 mt-5 mb-15 w-full px-5'>
+
+                {meals.map((meal) => (
+                    <MealCard
+                        key={meal.idMeal}
+                        meal={meal}
+                    />
+                ))}
+
 
             </section>
 

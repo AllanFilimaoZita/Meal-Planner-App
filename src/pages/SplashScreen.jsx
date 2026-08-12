@@ -6,13 +6,10 @@ import { getSession } from "../services/authService";
 export default function SplashScreen() {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        checkSession();
-    }, []);
-
+    
     async function checkSession() {
         const { data, error } = await getSession();
-
+        
         if (error) {
             console.error(error.message);
             navigate("/signin");
@@ -25,6 +22,10 @@ export default function SplashScreen() {
             navigate("/signin");
         }
     }
+    
+    useEffect(() => {
+        checkSession();
+    }, []);
 
     return (
         <div className="min-h-screen flex items-center justify-center">

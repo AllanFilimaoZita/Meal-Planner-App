@@ -27,7 +27,7 @@ function Home() {
 
                 setMeals(data);
 
-            } catch (error) {
+            } catch{
 
                 setError("Não foi possível carregar receitas...")
 

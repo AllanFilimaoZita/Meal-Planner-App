@@ -108,7 +108,7 @@ function App() {
         />
         
         <Route
-          path="/recipe"
+          path="/recipe/:id"
           element={
             <ProtectedRoute>
               <Recipe />

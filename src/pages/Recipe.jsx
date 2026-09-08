@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 import { MdKeyboardBackspace } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
@@ -7,136 +7,147 @@ import { IoReload } from "react-icons/io5";
 
 import { getMealById } from "../services/mealService";
 
-
 function Recipe() {
-
     const { id } = useParams();
 
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-
     useEffect(() => {
-
         async function loadRecipe() {
-
             try {
-
                 const data = await getMealById(id);
 
+                if (!data) {
+                    setError("Receita não encontrada.");
+                    return;
+                }
+
                 setRecipe(data);
-
             } catch {
-
                 setError("Não foi possível carregar a receita.");
-
             } finally {
-
                 setLoading(false);
-
             }
-
         }
 
         loadRecipe();
-
     }, [id]);
 
-
     if (loading) {
-
         return (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="min-h-screen w-full flex items-center justify-center">
                 <p>A carregar receita...</p>
             </div>
         );
-
     }
-
 
     if (error) {
-
         return (
-            <div className="w-full h-full flex items-center justify-center">
-                <p>{error}</p>
+            <div className="min-h-screen w-full flex items-center justify-center px-5">
+                <p className="text-center">{error}</p>
             </div>
         );
-
     }
 
+    const ingredients = Array.from({ length: 20 }, (_, index) => {
+        const ingredient = recipe[`strIngredient${index + 1}`]?.trim();
+        const measure = recipe[`strMeasure${index + 1}`]?.trim();
+
+        if (!ingredient) {
+            return null;
+        }
+
+        return {
+            ingredient,
+            measure,
+        };
+    }).filter(Boolean);
 
     return (
+        <div className="min-h-screen w-full relative pb-10">
 
-        <div className="h-full w-full py-5 relative">
+            {/* Header */}
+            <header className="absolute top-0 left-0 z-10 w-full flex items-center justify-between px-5 py-4">
 
-            <header className="w-full flex items-start justify-between gap-3 px-5 absolute py-4 z-10">
-
-                <Link to="/home">
+                <Link
+                    to="/home"
+                    aria-label="Voltar para Home"
+                    className="bg-white/80 rounded-full p-1"
+                >
                     <MdKeyboardBackspace className="size-7" />
                 </Link>
 
-                <IoIosMore className="size-7" />
+                <button
+                    type="button"
+                    aria-label="Mais opções"
+                    className="bg-white/80 rounded-full p-1"
+                >
+                    <IoIosMore className="size-7" />
+                </button>
 
             </header>
 
+            {/* Recipe image */}
             <section>
-
                 <img
                     src={recipe.strMealThumb}
                     alt={recipe.strMeal}
                     className="w-full h-70 object-cover"
                 />
-
             </section>
 
-            <section className="w-full py-5 absolute top-65 bg-white rounded-t-4xl">
+            {/* Recipe content */}
+            <main className="w-full -mt-5 relative bg-white rounded-t-4xl pt-5">
 
-
+                {/* Recipe title */}
                 <section className="w-full flex items-center justify-between px-5">
 
                     <IoReload className="size-7" />
 
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-col items-center text-center">
 
-                        <h3 className="font-bold text-xl">
+                        <h1 className="font-bold text-xl">
                             {recipe.strMeal}
-                        </h3>
+                        </h1>
 
-                        <p>
+                        <p className="text-gray-500">
                             {recipe.strArea}
                         </p>
 
                     </div>
 
-                    <div className="w-5"></div>
+                    <div className="w-7" />
 
                 </section>
 
+                {/* Nutrition */}
                 <section className="flex items-center justify-between w-full px-5 py-4 mt-4 bg-gray-200">
 
                     <div className="flex flex-col items-center">
-                        <span>100k</span>
+                        <span>—</span>
                         <p className="font-bold">Energy</p>
                     </div>
 
                     <div className="flex flex-col items-center">
-                        <span>15g</span>
+                        <span>—</span>
                         <p className="font-bold">Protein</p>
                     </div>
 
                     <div className="flex flex-col items-center">
-                        <span>58g</span>
+                        <span>—</span>
                         <p className="font-bold">Carbs</p>
                     </div>
 
                     <div className="flex flex-col items-center">
-                        <span>20g</span>
+                        <span>—</span>
                         <p className="font-bold">Fat</p>
                     </div>
 
                 </section>
 
+                {/* Ingredients */}
                 <section className="flex flex-col w-full gap-3 px-5 py-4">
 
                     <div className="flex items-center justify-between">
@@ -144,100 +155,56 @@ function Recipe() {
                         <p className="font-bold">
                             Ingredients{" "}
                             <span className="font-light text-xs">
-                                2 services
+                                {ingredients.length} items
                             </span>
                         </p>
 
-                        <div>
-
-                            <button className="border w-12 h-10 p-2">
-                                -
-                            </button>
-
-                            <button className="border w-12 h-10 p-2">
-                                +
-                            </button>
-
-                        </div>
-
                     </div>
 
+                    {ingredients.length === 0 ? (
+                        <p className="text-gray-500">
+                            Ingredientes não disponíveis.
+                        </p>
+                    ) : (
+                        <ul className="flex flex-col gap-4 mt-3">
 
-                    <ul className="flex flex-col gap-4 mt-3">
+                            {ingredients.map(({ ingredient, measure }) => (
+                                <li
+                                    key={`${ingredient}-${measure}`}
+                                    className="flex items-center justify-between gap-4"
+                                >
 
-                        <li className="flex items-center justify-between">
+                                    <p>
+                                        {ingredient}
+                                    </p>
 
-                            <p>Country: {recipe.strCountry}</p>
+                                    <span className="text-gray-400 text-sm text-right">
+                                        {measure || "—"}
+                                    </span>
 
-                            <span className="text-gray-300">
-                                250g
-                            </span>
+                                </li>
+                            ))}
 
-                        </li>
-
-
-                        <li className="flex items-center justify-between">
-
-                            <p>Unsalted butter</p>
-
-                            <span className="text-gray-300">
-                                1tbsp
-                            </span>
-
-                        </li>
-
-
-                        <li className="flex items-center justify-between">
-
-                            <p>Sesame or vegetable oil</p>
-
-                            <span className="text-gray-300">
-                                2tsp
-                            </span>
-
-                        </li>
-
-
-                        <li className="flex items-center justify-between">
-
-                            <p>Fresh ginger</p>
-
-                            <span className="text-gray-300">
-                                2tsp
-                            </span>
-
-                        </li>
-
-
-                        <li className="flex items-center justify-between">
-
-                            <p>Large Egg</p>
-
-                            <span className="text-gray-300">
-                                100g
-                            </span>
-
-                        </li>
-
-                    </ul>
+                        </ul>
+                    )}
 
                     <div className="mt-5">
 
-                        <button className="bg-[#8B4EEB] w-full py-3 rounded-md text-white text-lg font-bold">
+                        <Link
+                            to={`/preparetion/${id}`}
+                            className="block bg-[#8B4EEB] w-full py-3 rounded-md text-white text-lg font-bold text-center"
+                        >
                             Start cooking
-                        </button>
+                        </Link>
 
                     </div>
 
                 </section>
 
-            </section>
+            </main>
 
         </div>
-
     );
-
 }
-
 
 export default Recipe;

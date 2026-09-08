@@ -1,17 +1,17 @@
 import { supabase } from "../lib/supabase";
 
 export async function signUp(name, email, password) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: name,
-      },
-    },
-  });
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: {
+                full_name: name,
+            },
+        },
+    });
 
-  return { data, error };
+    return { data, error };
 }
 
 export async function signIn(email, password) {
@@ -23,7 +23,14 @@ export async function signIn(email, password) {
     return { data, error };
 }
 
+export async function signOut() {
+    const { error } = await supabase.auth.signOut();
+
+    return { error };
+}
 
 export async function getSession() {
-  return await supabase.auth.getSession();
+    const { data, error } = await supabase.auth.getSession();
+
+    return { data, error };
 }

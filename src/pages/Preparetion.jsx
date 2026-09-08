@@ -1,52 +1,224 @@
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+
 import { MdOpenInFull } from "react-icons/md";
 
-import Ramen from '../assets/img/ramen.png'
+import { getMealById } from "../services/mealService";
 
 function Preparetion() {
-    return (
-        <div className="h-min-screen w-full py-5 relative">
+    const { id } = useParams();
 
-            <header className="w-full flex items-start justify-end gap-3 px-5 absolute py-4">
-                <MdOpenInFull className="text-white size-7" />
+    const [recipe, setRecipe] = useState(null);
+    const [steps, setSteps] = useState([]);
+    const [currentStep, setCurrentStep] = useState(0);
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        async function loadRecipe() {
+            try {
+                const data = await getMealById(id);
+
+                if (!data) {
+                    setError("Receita não encontrada.");
+                    return;
+                }
+
+                setRecipe(data);
+
+                const instructions = data.strInstructions
+                    ?.split(/\r?\n/)
+                    .map((step) => step.trim())
+                    .filter(Boolean);
+
+                setSteps(instructions ?? []);
+            } catch {
+                setError("Não foi possível carregar a receita.");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadRecipe();
+    }, [id]);
+
+    function handlePrevious() {
+        if (currentStep > 0) {
+            setCurrentStep((step) => step - 1);
+        }
+    }
+
+    function handleNext() {
+        if (currentStep < steps.length - 1) {
+            setCurrentStep((step) => step + 1);
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="min-h-screen w-full flex items-center justify-center">
+                <p>A carregar preparação...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen w-full flex items-center justify-center px-5">
+                <p className="text-center">{error}</p>
+            </div>
+        );
+    }
+
+    if (steps.length === 0) {
+        return (
+            <div className="min-h-screen w-full flex flex-col items-center justify-center gap-5 px-5">
+                <p className="text-center">
+                    As instruções desta receita não estão disponíveis.
+                </p>
+
+                <Link
+                    to={`/recipe/${id}`}
+                    className="bg-[#8B4EEB] px-6 py-3 rounded-md text-white font-bold"
+                >
+                    Voltar para receita
+                </Link>
+            </div>
+        );
+    }
+
+    const isFirstStep = currentStep === 0;
+    const isLastStep = currentStep === steps.length - 1;
+
+    return (
+        <div className="min-h-screen w-full relative">
+
+            <header className="absolute top-0 left-0 z-10 w-full flex items-center justify-end px-5 py-4">
+                <button
+                    type="button"
+                    aria-label="Expandir preparação"
+                    className="text-white"
+                >
+                    <MdOpenInFull className="size-7" />
+                </button>
             </header>
 
             <section>
-                <img src={Ramen} className="w-full h-70" />
+                <img
+                    src={recipe.strMealThumb}
+                    alt={recipe.strMeal}
+                    className="w-full h-70 object-cover"
+                />
             </section>
 
-            <section className="flex flex-col justify-between items-center w-full h-full py-5 absolute top-65 bg-white rounded-t-4xl">
-                <section className="w-full flex items-center justify-center px-5">
-                    <div className="flex flex-col items-center">
-                        <h3 className="font-bold text-xl">Step 4</h3>
-                    </div>
+            <main className="w-full -mt-5 relative bg-white rounded-t-4xl pt-5">
+
+                <section className="w-full flex flex-col items-center justify-center px-5">
+
+                    <span className="text-gray-400 text-sm">
+                        {recipe.strMeal}
+                    </span>
+
+                    <h1 className="font-bold text-xl">
+                        Step {currentStep + 1}
+                    </h1>
+
+                    <span className="text-gray-400 text-sm">
+                        {currentStep + 1} of {steps.length}
+                    </span>
+
                 </section>
 
                 <section className="flex flex-col w-full gap-3 px-5 py-4">
-                    <ul className="flex flex-col gap-4 mt-3">
-                        <li className="flex items-center justify-between">
-                            <p>Bacon</p>
-                            <span className="text-gray-300">50 gr</span>
-                        </li>
-                        <li className="flex items-center justify-between">
-                            <p>Soy Sauce</p>
-                            <span className="text-gray-300">200 ml</span>
-                        </li>
+
+                    <h2 className="font-bold">
+                        Ingredients
+                    </h2>
+
+                    <ul className="flex flex-col gap-3">
+
+                        {Array.from({ length: 20 }, (_, index) => {
+                            const ingredient =
+                                recipe[
+                                    `strIngredient${index + 1}`
+                                ]?.trim();
+
+                            const measure =
+                                recipe[
+                                    `strMeasure${index + 1}`
+                                ]?.trim();
+
+                            if (!ingredient) {
+                                return null;
+                            }
+
+                            return (
+                                <li
+                                    key={`${ingredient}-${measure}`}
+                                    className="flex items-center justify-between gap-4"
+                                >
+                                    <p>{ingredient}</p>
+
+                                    <span className="text-gray-400 text-sm text-right">
+                                        {measure || "—"}
+                                    </span>
+                                </li>
+                            );
+                        })}
+
                     </ul>
 
-                    <p>
-                        We tie the bacon with twine so that the skin is on the outside and one end and the other practically meet. Heat a little oil in a pressure cooker and mark the bacon all over until golden brown. We remove and discard the oil.
-                    </p>
+                    <div className="mt-4">
+
+                        <h2 className="font-bold mb-2">
+                            Instructions
+                        </h2>
+
+                        <p className="leading-7 text-gray-700">
+                            {steps[currentStep]}
+                        </p>
+
+                    </div>
 
                     <div className="flex gap-4 mt-5">
 
-                        <button className="bg-[#c9c9c9] w-full py-3 rounded-md text-black text-lg font-bold">Previous</button>
-                        <button className="bg-[#8B4EEB] w-full py-3 rounded-md text-white text-lg font-bold">Start cooking </button>
-                    </div>
-                </section>
-            </section>
+                        <button
+                            type="button"
+                            onClick={handlePrevious}
+                            disabled={isFirstStep}
+                            className={`w-full py-3 rounded-md text-lg font-bold ${
+                                isFirstStep
+                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-300 text-black"
+                            }`}
+                        >
+                            Previous
+                        </button>
 
+                        {isLastStep ? (
+                            <Link
+                                to={`/recipe/${id}`}
+                                className="w-full py-3 rounded-md bg-[#8B4EEB] text-white text-lg font-bold text-center"
+                            >
+                                Finish
+                            </Link>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={handleNext}
+                                className="w-full py-3 rounded-md bg-[#8B4EEB] text-white text-lg font-bold"
+                            >
+                                Next
+                            </button>
+                        )}
+
+                    </div>
+
+                </section>
+            </main>
         </div>
-    )
+    );
 }
 
-export default Preparetion
+export default Preparetion;

@@ -114,22 +114,6 @@ function Preparetion() {
 
             <main className="w-full -mt-5 relative bg-white rounded-t-4xl pt-5">
 
-                <section className="w-full flex flex-col items-center justify-center px-5">
-
-                    <span className="text-gray-400 text-sm">
-                        {recipe.strMeal}
-                    </span>
-
-                    <h1 className="font-bold text-xl">
-                        Step {currentStep + 1}
-                    </h1>
-
-                    <span className="text-gray-400 text-sm">
-                        {currentStep + 1} of {steps.length}
-                    </span>
-
-                </section>
-
                 <section className="flex flex-col w-full gap-3 px-5 py-4">
 
                     <h2 className="font-bold">

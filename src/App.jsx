@@ -18,6 +18,7 @@ import Chat from "./pages/Chat";
 import Preparetion from "./pages/Preparetion";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
+import RecipesPages from "./pages/RecipesPages";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/signup" element={<SignUp />} />
 
                 <Route element={<ProtectedRoute />}>
+                    <Route path="/recipes" element={<RecipesPages />} />
                     <Route path="/onboarding" element={<Onboarding />} />
                     <Route path="/home" element={<Home />} />
                     <Route path="/step1" element={<Step1 />} />

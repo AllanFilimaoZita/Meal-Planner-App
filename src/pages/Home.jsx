@@ -127,10 +127,6 @@ function Home() {
                                 Ainda não tens receitas
                             </h3>
 
-                            <p className="mt-2 text-sm text-gray-500">
-                                Começa por guardar a tua primeira receita!
-                            </p>
-
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(true)}

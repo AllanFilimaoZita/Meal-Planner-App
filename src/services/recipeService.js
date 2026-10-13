@@ -26,6 +26,41 @@ export async function getRecipes() {
     return data;
 }
 
+export async function getRecipeById(recipeId) {
+
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError) {
+
+        throw userError;
+
+    }
+
+    if (!user) {
+
+        throw new Error("Utilizador não autenticado.")
+
+    }
+
+    const { data, error } = await supabase
+        .from("recipes")
+        .select("*")
+        .eq("id", recipeId)
+        .single()
+
+    if (error) {
+
+        throw error;
+
+    }
+
+    return data;
+
+}
+
 export async function createRecipe(recipe) {
     const {
         data: { user },

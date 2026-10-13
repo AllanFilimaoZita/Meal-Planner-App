@@ -1,34 +1,30 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { getSession } from "../services/authService";
+import { supabase } from "../lib/supabase";
 
 export default function ProtectedRoute() {
     const [loading, setLoading] = useState(true);
-    const [session, setSession] = useState(null);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        async function checkSession() {
-            const { data, error } = await getSession();
+        async function checkUser() {
+            const { data, error } = await supabase.auth.getUser();
 
             if (!error) {
-                setSession(data?.session ?? null);
+                setUser(data.user);
             }
 
             setLoading(false);
         }
 
-        checkSession();
+        checkUser();
     }, []);
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <h1>A verificar autenticação...</h1>
-            </div>
-        );
+        return <p>A verificar autenticação...</p>;
     }
 
-    if (!session) {
+    if (!user) {
         return <Navigate to="/signin" replace />;
     }
 

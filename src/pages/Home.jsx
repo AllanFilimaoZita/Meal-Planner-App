@@ -70,6 +70,7 @@ function Home() {
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
+          aria-label="Adicionar receita"
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98]"
         >
           <IoAddOutline className="size-5" />
@@ -82,9 +83,7 @@ function Home() {
 
           <div className="flex items-center gap-2">
             <FaFire className="text-orange-500" />
-
             <p className="text-2xl font-bold">1,284</p>
-
             <span className="text-sm text-gray-500">calorias</span>
           </div>
 
@@ -106,7 +105,13 @@ function Home() {
 
           {recipes.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-12 text-center">
-              <h3 className="text-lg font-semibold">Ainda não tens receitas</h3>
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-50">
+                <IoAddOutline className="size-7 text-orange-600" />
+              </div>
+
+              <h3 className="text-lg font-semibold">
+                Ainda não tens receitas
+              </h3>
 
               <p className="mt-2 text-sm text-gray-500">
                 Começa por guardar a tua primeira receita!
@@ -128,7 +133,7 @@ function Home() {
                   to={`/recipe/${recipe.id}`}
                   className="block"
                 >
-                  <article className="overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md cursor-pointer">
+                  <article className="cursor-pointer overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md">
                     <img
                       src={recipe.image_url || Photo}
                       alt={recipe.title}

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { getRecipes, createRecipe } from "../services/recipeService";
+import { getRecipes, createRecipe, updateRecipe } from "../services/recipeService";
 
 function RecipesPages() {
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [saving, setSaving] = useState(false);
-    const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [recipes, setRecipes] = useState([]);
+  const [editingRecipeId, setEditingRecipeId] = useState(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -33,7 +34,39 @@ function RecipesPages() {
   function handleChange(event) {
     const { name, value } = event.target;
 
-    setForm((previousForm) => ({...previousForm, [name]: value, }));
+    setForm((previousForm) => ({
+      ...previousForm,
+      [name]: value,
+    }));
+  }
+
+  function resetForm() {
+    setForm({
+      title: "",
+      description: "",
+      ingredients: "",
+      instructions: "",
+      image_url: "",
+    });
+
+    setEditingRecipeId(null);
+    setError(null);
+  }
+
+  function handleEdit(recipe) {
+    setEditingRecipeId(recipe.id);
+
+    setForm({
+      title: recipe.title ?? "",
+      description: recipe.description ?? "",
+      ingredients: (recipe.ingredients ?? [])
+        .map((item) => item.name)
+        .join("\n"),
+      instructions: recipe.instructions ?? "",
+      image_url: recipe.image_url ?? "",
+    });
+
+    setError(null);
   }
 
   async function handleSubmit(event) {
@@ -45,34 +78,55 @@ function RecipesPages() {
       return;
     }
 
+    const ingredients = form.ingredients
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => ({
+        name: item,
+        quantity: "1",
+        unit: "unidade",
+      }));
+
+    if (ingredients.length === 0) {
+      setError("Adiciona pelo menos um ingrediente.");
+      return;
+    }
+
+    const recipeData = {
+      title: form.title.trim(),
+      description: form.description.trim(),
+      ingredients,
+      instructions: form.instructions.trim(),
+      image_url: form.image_url.trim() || null,
+    };
+
     setSaving(true);
 
     try {
-      const newRecipe = await createRecipe({
-        title: form.title.trim(),
-        description: form.description.trim(),
-        ingredients: form.ingredients
-          .split("\n")
-          .map((item) => item.trim())
-          .filter(Boolean)
-          .map((item) => ({
-            name: item,
-            quantity: "1",
-            unit: "unidade",
-          })),
-        instructions: form.instructions.trim(),
-        image_url: form.image_url.trim() || null,
-      });
+      if (editingRecipeId) {
+        const updatedRecipe = await updateRecipe(
+          editingRecipeId,
+          recipeData
+        );
 
-      setRecipes((previousRecipes) => [newRecipe, ...previousRecipes]);
+        setRecipes((previousRecipes) =>
+          previousRecipes.map((recipe) =>
+            recipe.id === editingRecipeId
+              ? updatedRecipe
+              : recipe
+          )
+        );
+      } else {
+        const newRecipe = await createRecipe(recipeData);
 
-      setForm({
-        title: "",
-        description: "",
-        ingredients: "",
-        instructions: "",
-        image_url: "",
-      });
+        setRecipes((previousRecipes) => [
+          newRecipe,
+          ...previousRecipes,
+        ]);
+      }
+
+      resetForm();
     } catch (error) {
       setError(error.message);
     } finally {
@@ -88,8 +142,13 @@ function RecipesPages() {
     <main className="mx-auto max-w-2xl space-y-8 p-6">
       <h1 className="text-2xl font-bold">As minhas receitas</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-5">
-        <h2 className="text-xl font-semibold">Criar receita</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 rounded-lg border p-5"
+      >
+        <h2 className="text-xl font-semibold">
+          {editingRecipeId ? "Editar receita" : "Criar receita"}
+        </h2>
 
         <div>
           <label htmlFor="title">Nome da receita *</label>
@@ -115,13 +174,16 @@ function RecipesPages() {
         </div>
 
         <div>
-          <label htmlFor="ingredients">Ingredientes (um por linha)</label>
+          <label htmlFor="ingredients">
+            Ingredientes (um por linha) *
+          </label>
           <textarea
             id="ingredients"
             name="ingredients"
             value={form.ingredients}
             onChange={handleChange}
             placeholder={"Frango\nAlho\nLimão"}
+            required
             className="mt-1 w-full rounded border p-2"
           />
         </div>
@@ -138,7 +200,9 @@ function RecipesPages() {
         </div>
 
         <div>
-          <label htmlFor="image_url">URL da imagem (opcional)</label>
+          <label htmlFor="image_url">
+            URL da imagem (opcional)
+          </label>
           <input
             id="image_url"
             name="image_url"
@@ -149,13 +213,30 @@ function RecipesPages() {
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={saving}
-          className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
-        >
-          {saving ? "A guardar..." : "Criar receita"}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="submit"
+            disabled={saving}
+            className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
+          >
+            {saving
+              ? "A guardar..."
+              : editingRecipeId
+                ? "Guardar alterações"
+                : "Criar receita"}
+          </button>
+
+          {editingRecipeId && (
+            <button
+              type="button"
+              onClick={resetForm}
+              disabled={saving}
+              className="rounded border px-4 py-2"
+            >
+              Cancelar edição
+            </button>
+          )}
+        </div>
 
         {error && (
           <p role="alert" className="text-red-600">
@@ -165,17 +246,31 @@ function RecipesPages() {
       </form>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold">Receitas guardadas</h2>
+        <h2 className="text-xl font-semibold">
+          Receitas guardadas
+        </h2>
 
         {recipes.length === 0 ? (
           <p>Ainda não existem receitas.</p>
         ) : (
           recipes.map((recipe) => (
-            <div key={recipe.id} className="rounded-lg border p-4">
+            <article
+              key={recipe.id}
+              className="space-y-3 rounded-lg border p-4"
+            >
               <h3 className="font-semibold">{recipe.title}</h3>
 
               {recipe.description && <p>{recipe.description}</p>}
-            </div>
+
+              <button
+                type="button"
+                onClick={() => handleEdit(recipe)}
+                disabled={saving}
+                className="rounded bg-gray-200 px-3 py-2 text-sm disabled:opacity-50"
+              >
+                Editar
+              </button>
+            </article>
           ))
         )}
       </section>

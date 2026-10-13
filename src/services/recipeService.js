@@ -1,4 +1,3 @@
-
 import { supabase } from "../lib/supabase";
 
 export async function getRecipes() {
@@ -95,3 +94,16 @@ export async function updateRecipe(recipeId, recipe) {
 
     return data;
 }
+
+
+export async function deleteRecipe(recipeId) {
+    const { error } = await supabase
+        .from("recipes")
+        .delete()
+        .eq("id", recipeId);
+
+    if (error) {
+        throw error;
+    }
+}
+

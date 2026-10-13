@@ -1,23 +1,24 @@
+
 import { useEffect, useState } from "react";
 import { FaFire } from "react-icons/fa6";
-import { IoMdMenu } from "react-icons/io";
+import { IoAddOutline } from "react-icons/io5";
 
 import Photo from "../assets/img/Photo.png";
 import Navigation from "../components/Navigation";
-import MealCard from "../components/meals/MealCard";
-import { getMeals } from "../services/mealService";
+import RecipeModal from "../components/RecipeModal";
+import { getRecipes } from "../services/recipeService";
 
 function Home() {
-    const [meals, setMeals] = useState([]);
+    const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
-        async function loadMeals() {
+        async function loadRecipes() {
             try {
-                const data = await getMeals();
-
-                setMeals(data);
+                const data = await getRecipes();
+                setRecipes(data);
             } catch {
                 setError("Não foi possível carregar as receitas.");
             } finally {
@@ -25,98 +26,158 @@ function Home() {
             }
         }
 
-        loadMeals();
+        loadRecipes();
     }, []);
+
+    function handleRecipeCreated(newRecipe) {
+        setRecipes((previousRecipes) => [
+            newRecipe,
+            ...previousRecipes,
+        ]);
+    }
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <p>A carregar receitas...</p>
+            <div className="flex min-h-screen items-center justify-center">
+                <p className="text-gray-500">A carregar receitas...</p>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen flex items-center justify-center px-5">
-                <p className="text-center">{error}</p>
+            <div className="flex min-h-screen items-center justify-center px-5">
+                <p role="alert" className="text-center text-red-600">
+                    {error}
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center py-5 relative">
-            <header className="flex flex-row items-center justify-between w-full px-5 py-4 bg-white">
-                <div className="w-10 cursor-pointer">
+        <div className="min-h-screen w-full bg-gray-50 pb-24">
+            <header className="flex items-center justify-between bg-white px-5 py-4">
+                <div className="flex items-center gap-3">
                     <img
                         src={Photo}
-                        className="w-full rounded-full"
-                        alt="Profile"
+                        alt="Perfil"
+                        className="h-10 w-10 rounded-full object-cover"
                     />
-                </div>
 
-                <button
-                    type="button"
-                    className="bg-gray-200 p-1.5 rounded-md hover:bg-gray-700 hover:text-white transition-all"
-                >
-                    <IoMdMenu className="size-6" />
-                </button>
-            </header>
-
-            <section className="px-4 py-3 flex flex-col items-center justify-between border w-[90%] h-50 rounded-xl">
-                <div className="flex items-center justify-between w-full">
-                    <h3 className="font-bold">Today's Progress</h3>
-
-                    <span className="text-blue-400">
-                        View more
-                    </span>
-                </div>
-
-                <div className="w-full">
-                    <div className="flex flex-col items-start">
-                        <span className="text-gray-300 text-sm">
-                            Calories
-                        </span>
-
-                        <div className="flex items-center justify-center gap-1">
-                            <FaFire />
-
-                            <p className="text-xl">
-                                1,284
-                            </p>
-                        </div>
+                    <div>
+                        <p className="text-sm text-gray-500">
+                            O teu espaço
+                        </p>
+                        <h1 className="text-xl font-bold">
+                            Minhas receitas
+                        </h1>
                     </div>
                 </div>
 
-                <div className="w-full flex items-center justify-start gap-4">
-                    <img
-                        src={Photo}
-                        className="w-9 rounded-full"
-                        alt="Profile"
-                    />
+                <button
+                            type="button"
+                            onClick={() => setIsModalOpen(true)}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98]"
+                        >
+                            <IoAddOutline className="size-5" />
+                        </button>
+            </header>
 
-                    <p className="bg-gray-100 px-4 py-2 rounded-full text-sm">
-                        Keep the pace! You're doing great.
-                    </p>
-                </div>
-            </section>
+            <main className="mx-auto max-w-6xl px-5 py-6">
+                <section className="mb-8 rounded-2xl bg-white p-5 shadow-sm">
+                    <h2 className="mb-4 font-bold">
+                        Today's Progress
+                    </h2>
 
-            <section className="flex flex-col items-center justify-center gap-5 mt-5 mb-15 w-full px-5">
-                {meals.length === 0 ? (
-                    <p className="text-gray-500 text-center">
-                        Nenhuma receita encontrada.
+                    <div className="flex items-center gap-2">
+                        <FaFire className="text-orange-500" />
+
+                        <p className="text-2xl font-bold">1,284</p>
+
+                        <span className="text-sm text-gray-500">
+                            calorias
+                        </span>
+                    </div>
+
+                    <p className="mt-3 text-sm text-gray-500">
+                        Continua a cuidar da tua alimentação!
                     </p>
-                ) : (
-                    meals.map((meal) => (
-                        <MealCard
-                            key={meal.idMeal}
-                            meal={meal}
-                        />
-                    ))
-                )}
-            </section>
+                </section>
+
+                <section>
+                    <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h2 className="text-2xl font-bold">
+                                As minhas receitas
+                            </h2>
+
+                            <p className="mt-1 text-sm text-gray-500">
+                                Todas as receitas que guardaste no teu espaço.
+                            </p>
+                        </div>
+                    </div>
+
+                    {recipes.length === 0 ? (
+                        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-12 text-center">
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-50">
+                                <IoAddOutline className="size-7 text-orange-600" />
+                            </div>
+
+                            <h3 className="text-lg font-semibold">
+                                Ainda não tens receitas
+                            </h3>
+
+                            <p className="mt-2 text-sm text-gray-500">
+                                Começa por guardar a tua primeira receita!
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(true)}
+                                className="mt-5 rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white transition hover:bg-orange-700"
+                            >
+                                Criar primeira receita
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {recipes.map((recipe) => (
+                                <article
+                                    key={recipe.id}
+                                    className="overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-md"
+                                >
+                                    <img
+                                        src={recipe.image_url || Photo}
+                                        alt={recipe.title}
+                                        className="h-52 w-full object-cover"
+                                    />
+
+                                    <div className="p-4">
+                                        <h3 className="text-lg font-bold">
+                                            {recipe.title}
+                                        </h3>
+
+                                        {recipe.description && (
+                                            <p className="mt-2 line-clamp-3 text-sm text-gray-500">
+                                                {recipe.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    )}
+                </section>
+            </main>
 
             <Navigation />
+
+            {isModalOpen && (
+                <RecipeModal
+                    onClose={() => setIsModalOpen(false)}
+                    onCreated={handleRecipeCreated}
+                />
+            )}
         </div>
     );
 }

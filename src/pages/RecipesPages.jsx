@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getRecipes, createRecipe, updateRecipe } from "../services/recipeService";
+import { getRecipes, createRecipe, updateRecipe, deleteRecipe } from "../services/recipeService";
 
 function RecipesPages() {
   const [loading, setLoading] = useState(true);
@@ -69,6 +69,21 @@ function RecipesPages() {
     setError(null);
   }
 
+  async function handleDelete(recipeId) {
+
+    setError(null);
+
+    try {
+      await deleteRecipe(recipeId);
+
+      setRecipes((previousRecipes) =>
+        previousRecipes.filter((recipe) => recipe.id !== recipeId),
+      );
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     setError(null);
@@ -105,25 +120,17 @@ function RecipesPages() {
 
     try {
       if (editingRecipeId) {
-        const updatedRecipe = await updateRecipe(
-          editingRecipeId,
-          recipeData
-        );
+        const updatedRecipe = await updateRecipe(editingRecipeId, recipeData);
 
         setRecipes((previousRecipes) =>
           previousRecipes.map((recipe) =>
-            recipe.id === editingRecipeId
-              ? updatedRecipe
-              : recipe
-          )
+            recipe.id === editingRecipeId ? updatedRecipe : recipe,
+          ),
         );
       } else {
         const newRecipe = await createRecipe(recipeData);
 
-        setRecipes((previousRecipes) => [
-          newRecipe,
-          ...previousRecipes,
-        ]);
+        setRecipes((previousRecipes) => [newRecipe, ...previousRecipes]);
       }
 
       resetForm();
@@ -142,10 +149,7 @@ function RecipesPages() {
     <main className="mx-auto max-w-2xl space-y-8 p-6">
       <h1 className="text-2xl font-bold">As minhas receitas</h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 rounded-lg border p-5"
-      >
+      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-5">
         <h2 className="text-xl font-semibold">
           {editingRecipeId ? "Editar receita" : "Criar receita"}
         </h2>
@@ -174,9 +178,7 @@ function RecipesPages() {
         </div>
 
         <div>
-          <label htmlFor="ingredients">
-            Ingredientes (um por linha) *
-          </label>
+          <label htmlFor="ingredients">Ingredientes (um por linha) *</label>
           <textarea
             id="ingredients"
             name="ingredients"
@@ -200,9 +202,7 @@ function RecipesPages() {
         </div>
 
         <div>
-          <label htmlFor="image_url">
-            URL da imagem (opcional)
-          </label>
+          <label htmlFor="image_url">URL da imagem (opcional)</label>
           <input
             id="image_url"
             name="image_url"
@@ -217,7 +217,7 @@ function RecipesPages() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
+            className="rounded bg-orange-600 px-4 py-2 text-white disabled:opacity-50"
           >
             {saving
               ? "A guardar..."
@@ -246,9 +246,7 @@ function RecipesPages() {
       </form>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold">
-          Receitas guardadas
-        </h2>
+        <h2 className="text-xl font-semibold">Receitas guardadas</h2>
 
         {recipes.length === 0 ? (
           <p>Ainda não existem receitas.</p>
@@ -262,14 +260,25 @@ function RecipesPages() {
 
               {recipe.description && <p>{recipe.description}</p>}
 
-              <button
-                type="button"
-                onClick={() => handleEdit(recipe)}
-                disabled={saving}
-                className="rounded bg-gray-200 px-3 py-2 text-sm disabled:opacity-50"
-              >
-                Editar
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleEdit(recipe)}
+                  disabled={saving}
+                  className="rounded bg-gray-200 px-3 py-2 text-sm disabled:opacity-50"
+                >
+                  Editar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleDelete(recipe.id)}
+                  disabled={saving}
+                  className="rounded text-red-700 bg-red-500/50 px-3 py-2 text-sm disabled:opacity-50"
+                >
+                  Eliminar
+                </button>
+              </div>
             </article>
           ))
         )}

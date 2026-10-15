@@ -1,22 +1,30 @@
-
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { MdKeyboardBackspace } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 import { IoReload } from "react-icons/io5";
 
-import { getRecipeById } from "../services/recipeService";
+import {
+    deleteRecipe,
+    getRecipeById,
+} from "../services/recipeService";
+
 import RecipeModal from "../components/RecipeModal";
 
 function Recipe() {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState(null);
 
     useEffect(() => {
         async function loadRecipe() {
@@ -39,6 +47,27 @@ function Recipe() {
 
     function handleRecipeUpdated(updatedRecipe) {
         setRecipe(updatedRecipe);
+    }
+
+    async function handleDeleteRecipe() {
+        setIsMenuOpen(false);
+
+        try {
+            setIsDeleting(true);
+            setDeleteError(null);
+
+            await deleteRecipe(recipe.id);
+
+            navigate("/home", { replace: true });
+        } catch (error) {
+            console.error("Erro ao eliminar receita:", error);
+
+            setDeleteError(
+                "Não foi possível eliminar a receita. Tenta novamente."
+            );
+        } finally {
+            setIsDeleting(false);
+        }
     }
 
     if (loading) {
@@ -83,14 +112,16 @@ function Recipe() {
                         type="button"
                         aria-label="Mais opções"
                         aria-expanded={isMenuOpen}
-                        onClick={() => setIsMenuOpen((previous) => !previous)}
+                        onClick={() =>
+                            setIsMenuOpen((previous) => !previous)
+                        }
                         className="bg-white/80 rounded-full p-1"
                     >
                         <IoIosMore className="size-7" />
                     </button>
 
                     {isMenuOpen && (
-                        <div className="absolute right-0 mt-2 w-44 overflow-hidden rounded-xl bg-white shadow-lg">
+                        <div className="absolute right-0 mt-2 w-48 overflow-hidden rounded-xl bg-white shadow-lg">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -101,10 +132,28 @@ function Recipe() {
                             >
                                 Editar receita
                             </button>
+
+                            <button
+                                type="button"
+                                onClick={handleDeleteRecipe}
+                                disabled={isDeleting}
+                                className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                            >
+                                Eliminar receita
+                            </button>
                         </div>
                     )}
                 </div>
             </header>
+
+            {deleteError && (
+                <div
+                    role="alert"
+                    className="fixed top-20 left-5 right-5 z-30 rounded-xl bg-red-50 p-3 text-sm text-red-700 shadow"
+                >
+                    {deleteError}
+                </div>
+            )}
 
             <section>
                 {recipe.image_url ? (
@@ -127,7 +176,9 @@ function Recipe() {
                     <IoReload className="size-7" />
 
                     <div className="flex flex-col items-center text-center">
-                        <h1 className="font-bold text-xl">{recipe.title}</h1>
+                        <h1 className="font-bold text-xl">
+                            {recipe.title}
+                        </h1>
 
                         {recipe.description && (
                             <p className="text-gray-500 mt-2">

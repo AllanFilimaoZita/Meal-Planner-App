@@ -36,7 +36,7 @@ export async function getRecipeById(recipeId) {
     if (userError) {
 
         throw userError;
-
+        
     }
 
     if (!user) {
@@ -49,7 +49,8 @@ export async function getRecipeById(recipeId) {
         .from("recipes")
         .select("*")
         .eq("id", recipeId)
-        .single()
+        .eq("user_id", user.id)
+        .single();
 
     if (error) {
 
@@ -132,13 +133,40 @@ export async function updateRecipe(recipeId, recipe) {
 
 
 export async function deleteRecipe(recipeId) {
-    const { error } = await supabase
+
+    const {
+        data: { user },
+        error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError) {
+
+        throw userError;
+
+    }
+
+    if (!user) {
+
+        throw new Error("Utilizador não autenticado.")
+
+    }
+
+    const { data, error } = await supabase
         .from("recipes")
         .delete()
-        .eq("id", recipeId);
+        .eq("id", recipeId)
+        .eq("user_id", user.id)
+        .select();
 
     if (error) {
+
         throw error;
+
     }
+
+    if (!data || data.length === 0) {
+        throw new Error("Receita não encontrada ou sem permissão para eliminar.")
+    }
+
 }
 

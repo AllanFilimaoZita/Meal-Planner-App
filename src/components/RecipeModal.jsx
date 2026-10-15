@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import RecipeForm from "./RecipeForm";
 
-function RecipeModal({ onClose, onCreated }) {
+function RecipeModal({ onClose, onCreated, onUpdated, recipe = null }) {
     useEffect(() => {
         function handleKeyDown(event) {
             if (event.key === "Escape") {
@@ -17,6 +17,8 @@ function RecipeModal({ onClose, onCreated }) {
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [onClose]);
+
+    const isEditing = Boolean(recipe);
 
     return (
         <div
@@ -39,11 +41,13 @@ function RecipeModal({ onClose, onCreated }) {
                             id="recipe-modal-title"
                             className="text-2xl font-bold text-gray-900"
                         >
-                            Nova receita
+                            {isEditing ? "Editar receita" : "Nova receita"}
                         </h2>
 
                         <p className="mt-1 text-sm text-gray-500">
-                            Guarda uma nova receita no teu espaço.
+                            {isEditing
+                                ? "Actualiza os dados desta receita."
+                                : "Guarda uma nova receita no teu espaço."}
                         </p>
                     </div>
 
@@ -57,7 +61,12 @@ function RecipeModal({ onClose, onCreated }) {
                     </button>
                 </header>
 
-                <RecipeForm onCreated={onCreated} onClose={onClose} />
+                <RecipeForm
+                    recipe={recipe}
+                    onCreated={onCreated}
+                    onUpdated={onUpdated}
+                    onClose={onClose}
+                />
             </section>
         </div>
     );

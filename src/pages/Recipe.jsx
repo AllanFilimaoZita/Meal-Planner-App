@@ -1,19 +1,30 @@
-
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { MdKeyboardBackspace } from "react-icons/md";
 import { IoIosMore } from "react-icons/io";
 import { IoReload } from "react-icons/io5";
 
-import { getRecipeById } from "../services/recipeService";
+import {
+    deleteRecipe,
+    getRecipeById,
+} from "../services/recipeService";
+
+import RecipeModal from "../components/RecipeModal";
 
 function Recipe() {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [recipe, setRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState(null);
 
     useEffect(() => {
         async function loadRecipe() {
@@ -34,6 +45,31 @@ function Recipe() {
         loadRecipe();
     }, [id]);
 
+    function handleRecipeUpdated(updatedRecipe) {
+        setRecipe(updatedRecipe);
+    }
+
+    async function handleDeleteRecipe() {
+        setIsMenuOpen(false);
+
+        try {
+            setIsDeleting(true);
+            setDeleteError(null);
+
+            await deleteRecipe(recipe.id);
+
+            navigate("/home", { replace: true });
+        } catch (error) {
+            console.error("Erro ao eliminar receita:", error);
+
+            setDeleteError(
+                "Não foi possível eliminar a receita. Tenta novamente."
+            );
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
     if (loading) {
         return (
             <div className="min-h-screen w-full flex items-center justify-center">
@@ -49,10 +85,7 @@ function Recipe() {
                     {error || "Receita não encontrada."}
                 </p>
 
-                <Link
-                    to="/home"
-                    className="text-[#8B4EEB] font-bold"
-                >
+                <Link to="/home" className="text-[#8B4EEB] font-bold">
                     Voltar para Home
                 </Link>
             </div>
@@ -65,8 +98,7 @@ function Recipe() {
 
     return (
         <div className="min-h-screen w-full relative pb-10">
-
-            <header className="absolute top-0 left-0 z-10 w-full flex items-center justify-between px-5 py-4">
+            <header className="absolute top-0 left-0 z-20 w-full flex items-center justify-between px-5 py-4">
                 <Link
                     to="/home"
                     aria-label="Voltar para Home"
@@ -75,14 +107,53 @@ function Recipe() {
                     <MdKeyboardBackspace className="size-7" />
                 </Link>
 
-                <button
-                    type="button"
-                    aria-label="Mais opções"
-                    className="bg-white/80 rounded-full p-1"
-                >
-                    <IoIosMore className="size-7" />
-                </button>
+                <div className="relative">
+                    <button
+                        type="button"
+                        aria-label="Mais opções"
+                        aria-expanded={isMenuOpen}
+                        onClick={() =>
+                            setIsMenuOpen((previous) => !previous)
+                        }
+                        className="bg-white/80 rounded-full p-1"
+                    >
+                        <IoIosMore className="size-7" />
+                    </button>
+
+                    {isMenuOpen && (
+                        <div className="absolute right-0 mt-2 w-48 overflow-hidden rounded-xl bg-white shadow-lg">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsMenuOpen(false);
+                                    setIsModalOpen(true);
+                                }}
+                                className="w-full px-4 py-3 text-left text-sm hover:bg-gray-100"
+                            >
+                                Editar receita
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleDeleteRecipe}
+                                disabled={isDeleting}
+                                className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                            >
+                                Eliminar receita
+                            </button>
+                        </div>
+                    )}
+                </div>
             </header>
+
+            {deleteError && (
+                <div
+                    role="alert"
+                    className="fixed top-20 left-5 right-5 z-30 rounded-xl bg-red-50 p-3 text-sm text-red-700 shadow"
+                >
+                    {deleteError}
+                </div>
+            )}
 
             <section>
                 {recipe.image_url ? (
@@ -101,7 +172,6 @@ function Recipe() {
             </section>
 
             <main className="w-full -mt-5 relative bg-white rounded-t-4xl pt-5">
-
                 <section className="w-full flex items-center justify-between px-5">
                     <IoReload className="size-7" />
 
@@ -143,7 +213,6 @@ function Recipe() {
                 </section>
 
                 <section className="flex flex-col w-full gap-3 px-5 py-4">
-
                     <div className="flex items-center justify-between">
                         <p className="font-bold">
                             Ingredients{" "}
@@ -199,9 +268,16 @@ function Recipe() {
                             Start cooking
                         </Link>
                     </div>
-
                 </section>
             </main>
+
+            {isModalOpen && (
+                <RecipeModal
+                    recipe={recipe}
+                    onClose={() => setIsModalOpen(false)}
+                    onUpdated={handleRecipeUpdated}
+                />
+            )}
         </div>
     );
 }

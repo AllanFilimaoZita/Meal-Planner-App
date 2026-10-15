@@ -1,8 +1,8 @@
 
-import { useState } from "react";
-import { createRecipe } from "../services/recipeService";
+import { useEffect, useState } from "react";
+import { createRecipe, updateRecipe } from "../services/recipeService";
 
-function RecipeForm({ onCreated, onClose }) {
+function RecipeForm({ onCreated, onUpdated, onClose, recipe = null }) {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
 
@@ -14,6 +14,32 @@ function RecipeForm({ onCreated, onClose }) {
         image_url: "",
     });
 
+    const isEditing = Boolean(recipe);
+
+    useEffect(() => {
+        if (recipe) {
+            setForm({
+                title: recipe.title || "",
+                description: recipe.description || "",
+                ingredients: Array.isArray(recipe.ingredients)
+                    ? recipe.ingredients
+                        .map((item) =>
+                            [
+                                item.name,
+                                item.quantity,
+                                item.unit,
+                            ]
+                                .filter(Boolean)
+                                .join(" | ")
+                        )
+                        .join("\n")
+                    : "",
+                instructions: recipe.instructions || "",
+                image_url: recipe.image_url || "",
+            });
+        }
+    }, [recipe]);
+
     function handleChange(event) {
         const { name, value } = event.target;
 
@@ -21,6 +47,24 @@ function RecipeForm({ onCreated, onClose }) {
             ...previousForm,
             [name]: value,
         }));
+    }
+
+    function parseIngredients(value) {
+        return value
+            .split("\n")
+            .map((line) => line.trim())
+            .filter(Boolean)
+            .map((line) => {
+                const [name, quantity, unit] = line
+                    .split("|")
+                    .map((part) => part.trim());
+
+                return {
+                    name,
+                    quantity: quantity || "1",
+                    unit: unit || "unidade",
+                };
+            });
     }
 
     async function handleSubmit(event) {
@@ -32,18 +76,21 @@ function RecipeForm({ onCreated, onClose }) {
             return;
         }
 
-        const ingredients = form.ingredients
-            .split("\n")
-            .map((item) => item.trim())
-            .filter(Boolean)
-            .map((item) => ({
-                name: item,
-                quantity: "1",
-                unit: "unidade",
-            }));
+        const ingredients = parseIngredients(form.ingredients);
 
-        if (ingredients.length === 0) {
-            setError("Adiciona pelo menos um ingrediente.");
+        if (
+            ingredients.length === 0 ||
+            ingredients.some(
+                (item) =>
+                    !item.name ||
+                    !item.quantity ||
+                    Number(item.quantity) <= 0 ||
+                    !Number.isFinite(Number(item.quantity))
+            )
+        ) {
+            setError(
+                "Adiciona ingredientes válidos, com nome e quantidade positiva."
+            );
             return;
         }
 
@@ -58,11 +105,22 @@ function RecipeForm({ onCreated, onClose }) {
         setSaving(true);
 
         try {
-            const newRecipe = await createRecipe(recipeData);
+            if (isEditing) {
+                const updatedRecipe = await updateRecipe(
+                    recipe.id,
+                    recipeData
+                );
 
-            onCreated(newRecipe);
+                onUpdated(updatedRecipe);
+            } else {
+                const newRecipe = await createRecipe(recipeData);
+
+                onCreated(newRecipe);
+            }
+
             onClose();
         } catch (error) {
+            console.error("Erro ao guardar receita:", error);
             setError(error.message || "Não foi possível guardar a receita.");
         } finally {
             setSaving(false);
@@ -121,7 +179,8 @@ function RecipeForm({ onCreated, onClose }) {
                     className={inputClass}
                 />
                 <p className="mt-1 text-xs text-gray-500">
-                    Escreve um ingrediente por linha.
+                    Um ingrediente por linha. Para indicar a quantidade e a
+                    unidade, usa: Frango | 2 | kg
                 </p>
             </div>
 
@@ -179,7 +238,11 @@ function RecipeForm({ onCreated, onClose }) {
                     disabled={saving}
                     className="flex-1 rounded-xl bg-orange-600 px-4 py-3 font-semibold text-white transition hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                    {saving ? "A guardar..." : "Guardar receita"}
+                    {saving
+                        ? "A guardar..."
+                        : isEditing
+                            ? "Guardar alterações"
+                            : "Guardar receita"}
                 </button>
             </div>
         </form>

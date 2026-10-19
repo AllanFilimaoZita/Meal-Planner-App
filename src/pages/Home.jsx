@@ -1,3 +1,4 @@
+import { supabase } from "../lib/supabase";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaFire } from "react-icons/fa6";
@@ -13,6 +14,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     async function loadRecipes() {
@@ -27,6 +29,24 @@ function Home() {
     }
 
     loadRecipes();
+  }, []);
+
+  useEffect(() => {
+    async function loadUserName() {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data.user) {
+        return;
+      }
+
+      const fullName = data.user.user_metadata?.full_name;
+
+      if (fullName) {
+        setUserName(fullName.trim().split(/\s+/)[0]);
+      }
+    }
+
+    loadUserName();
   }, []);
 
   function handleRecipeCreated(newRecipe) {
@@ -62,7 +82,9 @@ function Home() {
           />
 
           <div className="min-w-0">
-            <p className="text-sm text-gray-500">Bem-vindo de volta 👋</p>
+            <p className="text-sm text-gray-500">
+              {userName ? `Olá, ${userName} 👋` : "Bem-vindo de volta 👋"}
+            </p>
             <h1 className="truncate text-xl font-bold">Minhas receitas</h1>
           </div>
         </div>

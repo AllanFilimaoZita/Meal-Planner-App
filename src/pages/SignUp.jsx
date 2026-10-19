@@ -23,8 +23,6 @@ const SignUp = () => {
             return;
         }
 
-        alert("Conta criada com sucesso!");
-
         setName("");
         setEmail("");
         setPassword("");

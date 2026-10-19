@@ -54,26 +54,27 @@ function Home() {
   return (
     <div className="min-h-screen w-full bg-gray-50 pb-24">
       <header className="flex items-center justify-between bg-white px-5 py-4">
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <img
             src={Photo}
-            alt="Perfil"
-            className="h-10 w-10 rounded-full object-cover"
+            alt="Foto de perfil padrão"
+            className="h-10 w-10 shrink-0 rounded-full object-cover"
           />
 
-          <div>
-            <p className="text-sm text-gray-500">O teu espaço</p>
-            <h1 className="text-xl font-bold">Minhas receitas</h1>
+          <div className="min-w-0">
+            <p className="text-sm text-gray-500">Bem-vindo de volta 👋</p>
+            <h1 className="truncate text-xl font-bold">Minhas receitas</h1>
           </div>
         </div>
 
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          aria-label="Adicionar receita"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-700 active:scale-[0.98]"
+          aria-label="Nova Receita"
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-orange-500 p-3 font-semibold text-white shadow-sm transition hover:bg-orange-400 active:scale-[0.98] sm:px-5"
         >
           <IoAddOutline className="size-5" />
+          Nova Receita
         </button>
       </header>
 
@@ -109,9 +110,7 @@ function Home() {
                 <IoAddOutline className="size-7 text-orange-600" />
               </div>
 
-              <h3 className="text-lg font-semibold">
-                Ainda não tens receitas
-              </h3>
+              <h3 className="text-lg font-semibold">Ainda não tens receitas</h3>
 
               <p className="mt-2 text-sm text-gray-500">
                 Começa por guardar a tua primeira receita!

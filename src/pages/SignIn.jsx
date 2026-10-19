@@ -22,8 +22,6 @@ const SignIn = () => {
             return;
         }
 
-        alert("Login realizado com sucesso!");
-
         setEmail("");
         setPassword("");
 

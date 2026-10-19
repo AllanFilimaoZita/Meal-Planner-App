@@ -75,11 +75,18 @@ function Home() {
     <div className="min-h-screen w-full bg-gray-50 pb-24">
       <header className="flex items-center justify-between bg-white px-5 py-4">
         <div className="flex min-w-0 items-center gap-3">
-          <img
-            src={Photo}
-            alt="Foto de perfil padrão"
-            className="h-10 w-10 shrink-0 rounded-full object-cover"
-          />
+          <Link
+            to="/profile"
+            aria-label="Ver perfil"
+            title="Ver perfil"
+            className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+          >
+            <img
+              src={Photo}
+              alt="Foto de perfil"
+              className="h-10 w-10 rounded-full object-cover transition hover:opacity-80"
+            />
+          </Link>
 
           <div className="min-w-0">
             <p className="text-sm text-gray-500">

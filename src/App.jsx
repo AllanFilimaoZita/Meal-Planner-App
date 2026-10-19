@@ -19,6 +19,7 @@ import Preparetion from "./pages/Preparetion";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
 import RecipesPages from "./pages/RecipesPages";
+import Profile from "./pages/Profiles";
 
 function App() {
     return (
@@ -42,6 +43,7 @@ function App() {
                     <Route path="/chat" element={<Chat />} />
                     <Route path="/preparetion/:id" element={<Preparetion />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/profile" element={<Profile />} />
                 </Route>
             </Routes>
         </BrowserRouter>

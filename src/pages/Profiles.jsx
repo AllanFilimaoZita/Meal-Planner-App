@@ -92,22 +92,28 @@ function Profile() {
     : "Não disponível";
 
   return (
+
     <main className="min-h-screen bg-gray-50 pb-10">
-      {/* Banner no topo */}
+
       <div className="h-40 bg-linear-to-br from-orange-500 to-orange-400 px-5 pt-6">
+
         <div className="mx-auto max-w-lg">
+
           <Link
             to="/home"
             className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur transition hover:bg-white/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             ← Início
           </Link>
+
         </div>
+
       </div>
 
       <div className="mx-auto -mt-14 max-w-lg px-5">
-        {/* Foto e nome sobrepostos ao banner */}
+        
         <div className="flex flex-col items-center text-center">
+
           <img
             src={avatar}
             alt={`Foto de perfil de ${fullName}`}
@@ -119,20 +125,24 @@ function Profile() {
           <span className="mt-2 rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">
             Membro desde {memberSince}
           </span>
+
         </div>
 
-        {/* Cartão com os dados */}
         <section
           aria-labelledby="account-title"
           className="mt-8 rounded-2xl bg-white p-2 shadow-sm"
         >
+
           <h2 id="account-title" className="px-4 pt-4 text-sm font-semibold text-gray-500">
             INFORMAÇÕES DA CONTA
           </h2>
 
           <div className="mt-2">
+
             <div className="flex items-center gap-4 rounded-xl px-4 py-3">
+
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -150,17 +160,22 @@ function Profile() {
               </div>
 
               <div className="min-w-0">
+
                 <p className="text-xs text-gray-500">Nome completo</p>
-                <p className="break-words font-medium text-gray-900">
+                <p className="wrap-break-word font-medium text-gray-900">
                   {fullName}
                 </p>
+
               </div>
+
             </div>
 
             <div className="mx-4 border-t border-gray-100" />
 
             <div className="flex items-center gap-4 rounded-xl px-4 py-3">
+
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-600">
+
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -175,16 +190,22 @@ function Profile() {
                   <rect x="3" y="5" width="18" height="14" rx="2" />
                   <path d="m3 7 9 6 9-6" />
                 </svg>
+
               </div>
 
               <div className="min-w-0">
+
                 <p className="text-xs text-gray-500">E-mail</p>
-                <p className="break-words font-medium text-gray-900">
+                <p className="wraps-break-word font-medium text-gray-900">
                   {email}
                 </p>
+
               </div>
+
             </div>
+
           </div>
+
         </section>
 
         {error && (
@@ -201,7 +222,9 @@ function Profile() {
         >
           {signingOut ? "A terminar sessão..." : "Terminar sessão"}
         </button>
+
       </div>
+      
     </main>
   );
 }

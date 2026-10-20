@@ -22,7 +22,7 @@ const SignUp = () => {
             alert(error.message);
             return;
         }
-
+        
         setName("");
         setEmail("");
         setPassword("");

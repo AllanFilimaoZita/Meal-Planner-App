@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -11,28 +12,47 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const { error } = await signUp(name, email, password);
+    setErrorMessage("");
+    setLoading(true);
 
-    if (error) {
-      alert(error.message);
-      return;
+    try {
+      const { error } = await signUp(name, email, password);
+
+      if (error) {
+        setErrorMessage(
+          "Verifica os teus dados e tenta novamente. Se já tiveres uma conta, inicia sessão."
+        );
+        return;
+      }
+
+      setName("");
+      setEmail("");
+      setPassword("");
+
+      navigate("/home");
+    } catch {
+      setErrorMessage(
+        "Não foi possível comunicar com o servidor. Verifica a tua ligação à internet e tenta novamente."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setName("");
-    setEmail("");
-    setPassword("");
-
-    navigate("/home");
   }
 
   return (
     <main className="relative flex min-h-screen flex-col">
       <section className="h-[35vh] w-full overflow-hidden">
-        <img src={Background} alt="" className="h-full w-full object-cover" />
+        <img
+          src={Background}
+          alt=""
+          className="h-full w-full object-cover"
+        />
       </section>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-[#8B4EEB]/50 to-[#8B4EEB]" />
@@ -47,6 +67,18 @@ const SignUp = () => {
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {errorMessage && (
+            <div
+              role="alert"
+              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              <p className="font-semibold">
+                Não foi possível criar a conta
+              </p>
+              <p className="mt-1">{errorMessage}</p>
+            </div>
+          )}
+
           <div>
             <label
               htmlFor="signup-name"
@@ -61,7 +93,10 @@ const SignUp = () => {
               autoComplete="name"
               placeholder="Digite o seu nome"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setErrorMessage("");
+              }}
               className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-purple-400"
               required
             />
@@ -81,7 +116,10 @@ const SignUp = () => {
               autoComplete="email"
               placeholder="Digite o seu email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrorMessage("");
+              }}
               className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-purple-400"
               required
             />
@@ -102,7 +140,10 @@ const SignUp = () => {
                 autoComplete="new-password"
                 placeholder="Digite a sua senha"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrorMessage("");
+                }}
                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pr-20 outline-none focus:ring-2 focus:ring-purple-400"
                 required
               />
@@ -159,9 +200,10 @@ const SignUp = () => {
 
           <button
             type="submit"
-            className="rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            disabled={loading}
+            className="rounded-lg bg-black py-3 font-semibold text-white transition hover:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Criar Conta
+            {loading ? "A criar conta..." : "Criar Conta"}
           </button>
         </form>
 

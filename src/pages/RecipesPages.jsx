@@ -1,5 +1,11 @@
+
 import { useEffect, useState } from "react";
-import { getRecipes, createRecipe, updateRecipe, deleteRecipe } from "../services/recipeService";
+import {
+  getRecipes,
+  createRecipe,
+  updateRecipe,
+  deleteRecipe,
+} from "../services/recipeService";
 
 function RecipesPages() {
   const [loading, setLoading] = useState(true);
@@ -8,12 +14,31 @@ function RecipesPages() {
   const [recipes, setRecipes] = useState([]);
   const [editingRecipeId, setEditingRecipeId] = useState(null);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [ingredientFilter, setIngredientFilter] = useState("");
+
   const [form, setForm] = useState({
     title: "",
     description: "",
     ingredients: "",
     instructions: "",
     image_url: "",
+  });
+
+  const filteredRecipes = recipes.filter((recipe) => {
+    const matchesName = (recipe.title ?? "")
+      .toLowerCase()
+      .includes(searchTerm.trim().toLowerCase());
+
+    const matchesIngredient =
+      !ingredientFilter.trim() ||
+      (recipe.ingredients ?? []).some((ingredient) =>
+        (ingredient.name ?? "")
+          .toLowerCase()
+          .includes(ingredientFilter.trim().toLowerCase()),
+      );
+
+    return matchesName && matchesIngredient;
   });
 
   useEffect(() => {
@@ -70,7 +95,6 @@ function RecipesPages() {
   }
 
   async function handleDelete(recipeId) {
-
     setError(null);
 
     try {
@@ -120,7 +144,10 @@ function RecipesPages() {
 
     try {
       if (editingRecipeId) {
-        const updatedRecipe = await updateRecipe(editingRecipeId, recipeData);
+        const updatedRecipe = await updateRecipe(
+          editingRecipeId,
+          recipeData,
+        );
 
         setRecipes((previousRecipes) =>
           previousRecipes.map((recipe) =>
@@ -149,7 +176,10 @@ function RecipesPages() {
     <main className="mx-auto max-w-2xl space-y-8 p-6">
       <h1 className="text-2xl font-bold">As minhas receitas</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-5">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 rounded-lg border p-5"
+      >
         <h2 className="text-xl font-semibold">
           {editingRecipeId ? "Editar receita" : "Criar receita"}
         </h2>
@@ -178,7 +208,9 @@ function RecipesPages() {
         </div>
 
         <div>
-          <label htmlFor="ingredients">Ingredientes (um por linha) *</label>
+          <label htmlFor="ingredients">
+            Ingredientes (um por linha) *
+          </label>
           <textarea
             id="ingredients"
             name="ingredients"
@@ -248,10 +280,55 @@ function RecipesPages() {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold">Receitas guardadas</h2>
 
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label
+              htmlFor="search-recipe"
+              className="block text-sm font-medium"
+            >
+              Pesquisar receita
+            </label>
+            <input
+              id="search-recipe"
+              type="search"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Ex.: Frango grelhado"
+              className="mt-1 w-full rounded border p-2"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="filter-ingredient"
+              className="block text-sm font-medium"
+            >
+              Filtrar por ingrediente
+            </label>
+            <input
+              id="filter-ingredient"
+              type="search"
+              value={ingredientFilter}
+              onChange={(event) => setIngredientFilter(event.target.value)}
+              placeholder="Ex.: Frango"
+              className="mt-1 w-full rounded border p-2"
+            />
+          </div>
+        </div>
+
+        <p className="text-sm text-gray-500">
+          {filteredRecipes.length}{" "}
+          {filteredRecipes.length === 1
+            ? "receita encontrada"
+            : "receitas encontradas"}
+        </p>
+
         {recipes.length === 0 ? (
           <p>Ainda não existem receitas.</p>
+        ) : filteredRecipes.length === 0 ? (
+          <p>Nenhuma receita corresponde à pesquisa e aos filtros.</p>
         ) : (
-          recipes.map((recipe) => (
+          filteredRecipes.map((recipe) => (
             <article
               key={recipe.id}
               className="space-y-3 rounded-lg border p-4"
@@ -260,12 +337,39 @@ function RecipesPages() {
 
               {recipe.description && <p>{recipe.description}</p>}
 
-              <div className="flex gap-2">
+              <div>
+                <h4 className="font-medium">Ingredientes</h4>
+                <ul className="list-inside list-disc">
+                  {(recipe.ingredients ?? []).map((ingredient, index) => (
+                    <li key={`${ingredient.name}-${index}`}>
+                      {ingredient.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {recipe.instructions && (
+                <div>
+                  <h4 className="font-medium">Instruções</h4>
+                  <p className="whitespace-pre-line">
+                    {recipe.instructions}
+                  </p>
+                </div>
+              )}
+
+              {recipe.image_url && (
+                <img
+                  src={recipe.image_url}
+                  alt={recipe.title}
+                  className="max-h-64 w-full rounded-lg object-cover"
+                />
+              )}
+
+              <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => handleEdit(recipe)}
-                  disabled={saving}
-                  className="rounded bg-gray-200 px-3 py-2 text-sm disabled:opacity-50"
+                  className="rounded border px-3 py-2"
                 >
                   Editar
                 </button>
@@ -273,8 +377,7 @@ function RecipesPages() {
                 <button
                   type="button"
                   onClick={() => handleDelete(recipe.id)}
-                  disabled={saving}
-                  className="rounded text-red-700 bg-red-500/50 px-3 py-2 text-sm disabled:opacity-50"
+                  className="rounded bg-red-600 px-3 py-2 text-white"
                 >
                   Eliminar
                 </button>

@@ -1,44 +1,69 @@
-import { Link } from "react-router-dom";
 
-import { PiBasketBold } from "react-icons/pi";
-import { BsChatRight } from "react-icons/bs";
+import { NavLink } from "react-router-dom";
+
+import { IoHomeOutline, IoPersonOutline } from "react-icons/io5";
 import { CiForkAndKnife } from "react-icons/ci";
-import { IoSunnyOutline } from "react-icons/io5";
+import { PiBowlFood } from "react-icons/pi";
+
+const navigationItems = [
+  {
+    label: "Home",
+    to: "/home",
+    icon: IoHomeOutline,
+  },
+  {
+    label: "Meal Plan",
+    to: "/recipe",
+    icon: CiForkAndKnife,
+  },
+  {
+    label: "Receitas",
+    to: "/recipes",
+    icon: PiBowlFood,
+  },
+  {
+    label: "Perfil",
+    to: "/profile",
+    icon: IoPersonOutline,
+  },
+];
 
 function Navigation() {
-    return (
-        <nav className="w-[90%] flex items-center justify-between bg-black text-white px-6 py-3 rounded-full fixed bottom-2 left-1/2 -translate-x-1/2 z-20">
+  return (
+    <nav
+      aria-label="Navegação principal"
+      className="fixed bottom-2 left-1/2 z-20 flex w-[90%] max-w-md -translate-x-1/2 items-center justify-around rounded-full bg-black px-3 py-3 text-white shadow-lg"
+    >
+      {navigationItems.map(({ label, to, icon: Icon }) => (
+        <NavLink
+          key={label}
+          to={to}
+          className={({ isActive }) =>
+            `flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-3 py-1 transition ${
+              isActive
+                ? "font-bold text-white"
+                : "text-white/60 hover:text-white"
+            }`
+          }
+          aria-label={label}
+        >
+          {({ isActive }) => (
+            <>
+              <span
+                className={`flex items-center justify-center rounded-full p-1.5 ${
+                  isActive ? "bg-white text-black" : ""
+                }`}
+              >
+                <Icon className="size-5" />
+              </span>
 
-            <div className="flex flex-col items-center justify-center gap-1">
-                <Link to={"/home"}>
-                    <div className="bg-white text-black rounded-full p-1.5">
-                        <IoSunnyOutline className="size-4" />
-                    </div>
-                    <span className="text-[10px] font-bold">Today</span>
-                </Link>
-            </div>
-
-            <div className="flex flex-col items-center justify-center gap-1 opacity-60">
-                <Link to={"/recipe"}>
-                    <CiForkAndKnife className="size-5" />
-                    <span className="text-[10px]">Meal Plan</span>
-                </Link>
-            </div>
-
-            <div className="flex flex-col items-center justify-center gap-1 opacity-60">
-                <PiBasketBold className="size-5" />
-                <span className="text-[10px]">Grocery List</span>
-            </div>
-
-            <div className="flex flex-col items-center justify-center gap-1 opacity-60">
-                <Link to={"/chat"}>
-                    <BsChatRight className="size-5" />
-                    <span className="text-[10px]">Chat</span>
-                </Link>
-            </div>
-
-        </nav>
-    )
+              <span className="text-[10px]">{label}</span>
+            </>
+          )}
+        </NavLink>
+      ))}
+    </nav>
+  );
 }
 
-export default Navigation
+export default Navigation;

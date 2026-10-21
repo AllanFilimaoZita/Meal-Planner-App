@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import Photo from "../assets/img/Photo.png";
 import { signOut } from "../services/authService";
 import Navigation from "../components/Navigation";
+import UserAvatar from "../components/UserAvatar";
 
 function Profile() {
   const navigate = useNavigate();
@@ -216,7 +216,7 @@ function Profile() {
     );
   }
 
-  const avatarUrl = user.user_metadata?.avatar_url || Photo;
+  
 
   const memberSince = user.created_at
     ? new Date(user.created_at).toLocaleDateString("pt-MZ", {
@@ -272,12 +272,9 @@ function Profile() {
           </h2>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-            <img
-              src={avatarUrl}
-              alt={`Foto de perfil de ${
-                user.user_metadata?.full_name || "utilizador"
-              }`}
-              className="h-24 w-24 rounded-full border border-gray-200 object-cover"
+            <UserAvatar 
+              name={fullName || user.user_metadata?.full_name || ""}
+              className="h-24 w-24 border border-gray-200 text-4xl"
             />
 
             <div className="min-w-0 flex-1 text-center sm:text-left">

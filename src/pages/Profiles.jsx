@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import Photo from "../assets/img/Photo.png";
 import { signOut } from "../services/authService";
+import Navigation from "../components/Navigation";
 
 function Profile() {
   const navigate = useNavigate();
@@ -447,6 +448,8 @@ function Profile() {
           </section>
         </div>
       )}
+
+      <Navigation />
     </main>
   );
 }

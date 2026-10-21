@@ -6,6 +6,7 @@ import { IoAddOutline } from "react-icons/io5";
 
 import Photo from "../assets/img/Photo.png";
 import Navigation from "../components/Navigation";
+import UserAvatar from "../components/UserAvatar";
 import RecipeModal from "../components/RecipeModal";
 import { getRecipes } from "../services/recipeService";
 
@@ -81,10 +82,9 @@ function Home() {
             title="Ver perfil"
             className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
           >
-            <img
-              src={Photo}
-              alt="Foto de perfil"
-              className="h-10 w-10 rounded-full object-cover transition hover:opacity-80"
+            <UserAvatar
+              name={userName}
+              className="h-10 w-10 text-lg transition hover:opacity-80"
             />
           </Link>
 
